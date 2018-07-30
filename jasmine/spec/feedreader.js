@@ -91,8 +91,8 @@ $(
       });
 
       it("completes work", function() {
-        const feed = document.querySelector(".feed");
-        expect(feed.children.length > 0).toBe(true);
+        const entry = document.querySelectorAll(".feed .entry");
+        expect(entry.length > 0).toBe(true);
       });
     });
     /* TODO: Write a new test suite named "New Feed Selection" */
@@ -101,20 +101,19 @@ $(
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
-      const feed = document.querySelector(".feed");
-      const feedOne = [];
+
       beforeEach(function(done) {
-        loadFeed(0);
-        Array.from(feed.children).forEach(function(entry) {
-          feedOne.push(entry.innerText);
+        loadFeed(1, function() {
+          firstFeed = $(".feed").html();
+          loadFeed(0, function() {
+            secondFeed = $(".feed").html();
+            done();
+          });
         });
-        loadFeed(1, done);
       });
 
       it("content changes", function() {
-        Array.from(feed.children).forEach(function(entry, index) {
-          expect(entry.innerText === feedOne[index]).toBe(false);
-        });
+        expect(firstFeed).not.toEqual(secondFeed);
       });
     });
   })()
